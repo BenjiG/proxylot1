@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,13 @@ public class ProxyLot1Controller {
     @GetMapping
     public List<MessageDto> send(@RequestParam final String message) {
         final List<String> response = client.connectLot1AndSendReceiveMessage(message);
-        return response.stream().map(parser::parse).collect(Collectors.toList());
+        final List<MessageDto> collect = response.stream().map(parser::parse).collect(Collectors.toList());
+        final List<MessageDto> messages = new ArrayList<>();
+        messages.add(collect.get(0));
+        for (int i = 1; i < 500; i++) {
+            messages.add(collect.get(1));
+        }
+        return messages;
     }
 
     @GetMapping("/test")
